@@ -1,0 +1,278 @@
+username,name,url,repository_with_dspy,context,icp_match,icp_match_rationale
+julianghadially,Julian Ghadially,https://github.com/julianghadially,https://github.com/julianghadially/FactChecker,"Raw context
+From linkedin:
+
+
+Founder
+The Product LLM · Full-time
+Oct 2023 - Present · 2 yrs 4 mos
+Austin, Texas, United States
+We help e-commerce software companies find exact product matches on any website at low cost. Our matching models exceed 95% accuracy and find 2 out of 3 known products for a tenth of the price as competitors. Search millions of records without batting an eye!
+Visit https://www.theproductllm.com for more details. (Formerly Margin Geek)
+
+
+
+
+From github:
+julianghadially
+ 4 followers · 2 following
+The Product LLM
+https://www.theproductllm.com
+in/julianghadially
+
+
+Pinned Repositories:
+FactChecker Public
+Self-improving fact checkers with DSPy
+
+
+FactChecker is a DSPy-based fact verification system that assesses the factual correctness of language model outputs. Unlike simple LLM-as-judge approaches that share biases with the models they evaluate, FactChecker grounds its judgments in external evidence through iterative web search.
+Results Summary:
+DSPy + GEPA optimization improved FactChecker performance relative to the unoptimized FactChecker system. On current event claims, FactChecker went from 91% to 96% accuracy on predictions made, and added 10-18 percentage points to each class-specific recall
+FactChecker verifies and refutes way more claims than the baseline model. On current event claims, FactChecker tied the base model on accuracy on predictions made, but added 21-66 percentage points to each class-specific recall
+On the 2023 FacTools-QA dataset, All systems performed roughly the same accuracy on predictions cases: 89% vs 88% vs. 91% for optimized, unoptimized, and baseline, respectively. Three explanations come to mind. Either GPT-5-mini has been trained on this 2023 data set, or the data set is too easy, or GPT-5-mini has very good recall.",Strong fit,"Already invested in self improvement prompt optimization, based on DSPY work on FactChecker project. Works as a founder at a small AI-native startup, and might need help with non-groundtruth guided optimization, or prompt optimization outside of dspy."
+hammer-mt,Mike Taylor,https://github.com/hammer-mt,https://github.com/hammer-mt/DSPyUI,"Description:
+Technical marketer with a marketer education agency for developing technical skills for other marketers, including how to work with and build AI workflows.
+Company & role: Founder of askRally.com, a virtual audiuence simulator for synthetic market research
+
+Relevant Past projects
+Founder of Saxifrage, an Experiment Lab where he ran Prompt Engineering tests with Generative AI models
+Built AI personas to respond to surveys for marketers, which the markets under the brand name “ask rally.”
+Built a user interface for training a DSPY system - “DSPyUI” (206 stars)
+Built a prompt testing library, “thumb” with 28 stars
+ 
+What Mike might need
+Mike helps marketers with automated personas for completing surveys.  many of these survey responses would be non-ground truth output, which dspy cannot handle. he may be interested in a framework that allows him to use a dspy type of construct, but on non-ground Truth data
+Separately, he used to help marketers build applications, and he still might. Many of those marketers might want to simplify the process of building evaluation data sets for DSPY. We could approach Mike about his pain points with DSPY and what could be improved in a competing framework. – for example, we could guide DSPY with agent as a judge that requires fewer human labeled examples.",Strong fit,"Already invested in self-improving prompt optimization, and likely has pain points around AI survey responders, which output non-ground truth and/or building eval sets efficiently, which we could help him with via consulting services. "
+KarelDO,Karel D'Oosterlinck,https://github.com/KarelDO,KarelDO/xmc.dspy,"Company & role: Member of Technical Staff @ OpenAI
+
+Past experience:
+PhD student in NLP at Ghent University
+In-Context Learning for eXtreme Multi-Label Classification (XMC) using only a handful of examples.
+
+Stopping profile since ICP match is not a fit.",Not a fit,"Part of a big tech house (openai), which is excluded from ICP"
+avbiswas,Avishek Biswas,https://github.com/avbiswas,avbiswas/context-engineering-dspy,"Description:
+Works on AI at a small company that builds AI personas. 
+Avishek is also a prolific deep learning AI youtuber
+MS, Computer sciences, Clemson
+Lives in India
+Company & role: Senior Deep Learning Engineer @ Socialtrait, a platform that constructs virtual AI persona communities that mirror specific demographic and psychographic profiles. These communities engage with product concepts through structured methodologies like in-depth interviews, focus group discussions, and surveys, all moderated by AI. Company has 27 associated people on linkedin.
+
+Relevant Past projects
+Create a popular Context Engineering Course with DSPy
+Created a Memory-Enabled Chatbot with DSPy
+ 
+What Avishek might need
+AI personas or a non-ground truth use case that might  benefit from prompt optimization support, which he enjoys using based on his past projects",Weak fit,"Avishek is highly experienced in prompt optimization with dspy, and has a non-ground truth use case that he might need support with. He could also be a partner via his Youtube channel. This would be a strong match except that he’s based in India right now."
+leonardtang,Leonard Tang,https://github.com/leonardtang,haizelabs/dspy-redteam,"Description:
+Co-founder and CEO of Haize Labs. We are solving the ultimate extant problem in AI: ensuring its reliability, quality, and alignment for any application. You might also know of us for our red-teaming work.
+Company & role: Co-Founder and CEO, Haize Labs, a small AI services company
+
+Relevant Past projects
+Red-Teaming Language Models with DSPy (248 stars). Where he performed non-groundtruth optimization
+Jailbreaking llama 3 
+ 
+What Leonard might need
+Multiple outcome metrics & tradeoffs between them
+Prompt optimization outside of dspy
+Non ground truth agents",Strong fit,"Builds AI workflows at a small AI Services company, focused on getting high reliability for clients, which absolutely requires prompt optimization"
+seanchatmangpt,Sean Chatman,https://github.com/seanchatmangpt,seanchatmangpt/dspygen,"Prolific coder focused on rust, javascript, and other languages. some python.",Not a fit,"Prolific coder focused on rust, javascript, and other languages. some python but not really a python developer. doesnt seem to be building ai workflows in python"
+ruvnet,Reuven Cohen,https://github.com/ruvnet,ruvnet/dspy.ts,"Company & role: Founder @ Ruv, an AI coaching business which coaches others on building AI systems. Also a Founder @ Agentics Foundation which is a community and foundation for agent AI systems. By bringing together forward-thinking individuals and organizations, they empower members to design, deploy, and manage autonomous agents that enhance human potential through intuitive, accessible interfaces.
+Past experience:
+Founder of rUv, an AI coaching business for autonomous AI systems, multi-agent orchestration, and neural network optimization
+Built a typescript version of DSPy
+Alpha/Beta Tester for trailblazing companies such as Napster, AOL, and Sierra Online.
+Founder of Enomaly Inc., a pioneering cloud computing company.
+Alpha/Beta tester for OpenAI
+Advisor to governments and international organizations (US Federal CIO Council)
+Co-author of the first US Cloud Definition with NIST
+
+
+What they might need:
+A prompt optimization solution for clients who have already built their systems outside of DSPy",Weak fit,"Independent consultant coaching others on building AI systems, and interested in DSPy after building his own typescript version of DSPy. Weak fit because it is not clear if he is still building code - he may be one step removed from the problem his clients have."
+haasonsaas,Jonathan Haas,https://github.com/haasonsaas,haasonsaas/dspy-0to1-guide,"Description: Making AI reliability measurable and reproducible
+Company & role: Member of Security Staff @Writer and Founder of EvalOps, an AI testing and monitoring platform that helps engineering teams ship reliable AI features with confidence.
+
+Past experience: 
+Built a real-time SDK for detecting and mitigating cognitive risks in LLM interactions as part of EvalOps
+Built a MCP server that transforms linear AI reasoning into structured, auditable thought graphs (EvalOps)
+Built OCode, a terminal-native AI coding assistant that provides deep codebase intelligence and autonomous task execution (python)
+Built an AI-powered email management agent in python with TUI dashboard, CLI commands, and multi-agent categorization system. Supports Gmail integration, rule-based processing, and Docker deployment
+Senior Product Manager at Vanta, leading AI trust management platform that helps businesses earn and prove trust through automating compliance, managing risk, and proving trust continuously.
+Cofounder and CEO of ThreatKey Inc, a cybersecurity startup expertising in cybersecurity, compliance automation, and product development.
+
+",Weak fit,"At night and on weekends he runs EvalOps, a company focused on making agents reliable enough for real work, and he built Multiple prompt optimization guides with dspy. His platform may need support on some non-ground truth use cases or multi outcome metric use cases."
+ALucek,Adam Lucek,https://github.com/ALucek,ALucek/dspy-breakdown,"Company & role: AI Specialist @Cisco and active youtuber with 23k views and many recent videos.
+Past experience: 
+Built dspy-breakdown in jupyter notebook: Stop prompt engineering! Program your LLMs with DSPy
+Built ppt2desc which converts PowerPoint files into semantically rich text using vision language models (100 stars)
+Built agentic-memory, which implements cognitive architecture and psychological memory concepts into Agentic LLM Systems
+Minor in Information Systems at UNC School of Information and Library Science
+Minor in Statistics and Analytics at The University of North Carolina at Chapel Hill
+",Not a fit,"Works as an AI specialist at Cisco, a large enterprise company with long, multi-stakeholder sales and procurement processes, which is excluded from the ICP. Although he does have side project interests they seem to be part of his youtube channel"
+Ziems,Noah Ziems,https://github.com/Ziems,Ziems/arbor,"Company & role: PhD Student at Notre Dame / Visiting Researcher at MIT CSAIL
+Past experience: 
+Creator of Arbor - RL-based optimization framework for DSPy programs
+#30 contributor to DSPy framework
+PhD Researcher that built a framework for optimizing DSPy programs with RL",Not a fit,Not a fit because he contributed to DSPy repo at Stanford/MIT - #30 top contributor (competitor team exclusion).
+XiaoConstantine,Xiao Cui,https://github.com/XiaoConstantine,XiaoConstantine/dspy-go,"Company & role: Unknown. May work at Maven
+
+Contact card
+Possibly a match: https://www.linkedin.com/in/jcxiao/ 
+
+Past experience
+Built Implementation of Titans in python, a system that learns to Memorize at Test Time - based on paper: arXiv:2501.00663 (Xiao is not the author). Built on top of nanoGPT. Titans introduces a neural long-term memory module that learns at test time, enabling effective context windows of 2M+ tokens while maintaining accuracy advantages over standard Transformers. (python)
+Built DSPy implementation for Go
+Built MCP implementation for Go
+Built CLI for semantic grep in Go
+
+Excerpt from personal site:
+
+Description:
+Xiao Cui    About    Archive
+Building software, raising humans
+About
+Hi, I’m Xiao
+I’m a software engineer passionate about AI, systems design, and machine learning engineering.
+What I Do
+I build tools and systems that work at scale. My interests span:
+Distributed systems and backend engineering
+LLMs and agentic AI frameworks
+Go and systems programming
+Open source contributions
+Currently exploring how to make AI systems more practical and deployable.
+Background
+I’ve worked on various projects ranging from Go microservices to AI frameworks. You can find my work on GitHub.
+This Blog
+I write about things I’m learning—primarily around AI engineering, systems design, and programming. Think of this as a learning journal that’s publicly accessible.
+Feel free to reach out via email or connect on GitHub.
+
+
+",Not a fit,"Broad interest includes dspy but no primary project to sell to. Plus, is more focused on Go than python, and likely works at maven, an enterprise company. "
+idebtor,,https://github.com/idebtor,idebtor/Dspy,"Past projects:
+Built nowic in C++: Data Structures(ECE200100/ITP20001) Lecture Notes By idebtor@gmail.com
+KMOOC-ML: KMOOC Lecture: Machine Learning in Python(파이썬으로 배우는 기계학습)
+DSpy - Data structures in python. NOTE: The following materials have been compiled and adapted from the numerous sources including my own. Please help me to keep this tutorial up-to-date by reporting any issues or questions. Send any comments or criticisms to idebtor@gmail.com Your assistances and comments will be appreciated. Lecture notes by idebtor@gmail.com. DSpy: Welcome in the name of the Lord to the ""Data Structures with Python"" (AIX20001 - AI Convergence Education Center) course!This course teaches data structures using Python.  However, it assumes that students have basic Python programming skills. This is an open development platform for students taking the data structures course.  Lecture materials and problem sets (PSETs) will be made available through this GitHub repository, but students will not have permission to update it. Therefore, you should clone the repository to your own computer and copy it to your own local repository to do your work.  The contents of this repository may be updated at any time, so please do not work directly in the cloned repository.  Also, if you find anything that needs correction, additions, or have better ideas, please let me know; your feedback would be greatly appreciated. Thank you for joining this course and for the opportunity to serve you. In Christ, Professor Youngseop Kim, Department of Computer and Electronic Engineering
+",Not a fit,Not an AI developer - seems to be a professor in Korea. The github repository got mistaken as DSPy where it actually is the abbreviation for Data Structures with Python.
+darinkishore,Darin Kishore,https://github.com/darinkishore,darinkishore/codex_dspy,"Description:
+AI python developer working on his own eval product. 
+Former Emory NLP MS student
+
+
+Contact Card
+https://www.linkedin.com/in/darin-kishore-a65576a1/
+https://github.com/darinkishore 
+
+Past Experience:
+Built a dspy module for openai codex.
+Built an Model Context Protocol (MCP) server that integrates with the Canvas learning management system (LMS). The goal is to provide an AI-driven assistant (e.g., Claude) with structured access to course information—assignments, due dates, lecture notes—so that it can help students stay organized and succeed academically.
+
+Linkedin description:
+As a Computer Science postgraduate from Emory University, I specialize in AI research and Natural Language Processing. I'm passionate about leveraging technology to improve human communication and well-being.
+
+At Emory NLP Lab, I designed and developed a state-of-the-art generation-based crisis detection AI model that achieved a 92% success rate in identifying all levels of crisis behaviors in dialogue. I'm leading the integration of this model into Emora, the Emory Student chatbot, ensuring secure data management and robust crisis-referral mechanisms.
+
+At Farmers Insurance, I implemented Dynamic Type on the login screen, which enhanced user experience and accessibility for 63% of iOS users. I also developed and implemented a comprehensive pipeline for automated PR review and unit test generation, enabling 100% coverage of enterprise codebases and faster feedback cycles.
+
+In addition to my academic and professional pursuits, I'm an entrepreneur at heart. I founded Punctuation Keyboards, a venture where I designed keyboards and keycaps, honing my technical and business skills.
+
+My goal is to continue pushing the boundaries of what's possible in AI and use my entrepreneurial spirit to bring innovative solutions to market. I'm always open to connecting with like-minded professionals and exploring new opportunities. Feel free to reach out if you'd like to discuss AI, tech entrepreneurship, or potential collaborations.",Weak fit,"AI python developer working on his own eval product. Built a dspy module for openai codex. May need prompt optimization services for his eval product. Weak fit because of interest alignment, but unclear what eval system he’s actually working on and whether he's still working on it. "
+vicentereig,Vicente Reig,https://github.com/vicentereig,vicentereig/dspy.rb,"Description: Primarily ruby / rust developer. Fractional product engineer; maintains DSPy for Ruby. has a python repo.
+
+
+Contact card:
+Vicente Services
+Valencia, Spain
+hey@vicente.services
+https://vicente.services
+@highwayvaquero
+in/vicentereig
+
+Past projects
+Founder of vicente.services consulting and fractional product work
+Dspy.rb The Ruby framework for programming—rather than prompting—language models.
+A2UI for Rails - LLM-driven UI generation with DSPy.rb and Turbo Streams
+Dspy-rb-skill - Claude Skill for DSPy.rb - Type-safe LLM application development in Ruby
+
+Description from github:
+Fractional Engineering Leader formerly at Apple, Atlassian, and New Relic. I'm interested in hearing from you; get in touch! I help founders build repeatable and reliable reasoning systems. 20 years shipping software—New Relic, Apple, Atlassian. Now I build product, lead small teams, and maintain DSPy.rb. I got tired of prompting LLMs and wanted to program them instead—turns out other people felt the same way. My clients are early-stage. Bootstrapped founders chasing revenue. Funded teams chasing growth. Both have proof it works. Both need proof it scales.
+Current interests
+I maintain DSPy.rb—I got tired of prompting LLMs and wanted to program them instead. Turns out other people felt the same way.
+I'm also working on A2UI Rails—a port of Google's A2UI for Rails using DSPy.rb and Turbo Streams. LLMs generate typed UI descriptions, not code; the client renders trusted ViewComponents.
+I keep building CLIs. Can't seem to stop. There's something satisfying about giving people direct access to their own data—no dashboards, no waiting, just a terminal and a question. Most of these started as tools I needed myself.
+quaid - get your chats back, export ChatGPT and Claude conversations locally
+plausible-cli - Plausible Analytics for AI agents and humans
+garmin-cli - pull your Garmin Connect data from the terminal
+whatsapp-cli - WhatsApp from your terminal, JSON interface for automation
+lf-cli - query Langfuse traces and metrics from the terminal
+exa-ruby - typed Ruby client and CLI for Exa.ai search API
+sorbet-baml - Sorbet type definitions for BAML
+sorbet-toon - typed Markdown tables for LLMs, structs survive the round-trip
+dspy-rb-skill - Claude Code skill for DSPy.rb development
+
+Description from his personal website:
+The Work
+Technical Transitions
+Navigate the Series A → B inflection point. At Finalis, early decisions no longer fit their scale—a system built for millions when reality was thousands. I guided simplifying 23 microservices into a monolith that matches their actual success ($10M ARR). At Tray.ai, refounded the Education Squad and rebuilt the documentation platform—20 content writers now ship without engineering bottlenecks. At StaffingReferrals.com, optimized response times from minutes to sub-second.
+Reasoning Systems
+Turn your AI experiment into a production-ready system. At Bounti.ai, I stabilized a GenAI prototype into a pipeline powering their AI Sales Assistant ($800K ARR). At Medicoder, designed EHR integrations and LLM classification pipelines for PHI/PII in skilled nursing facility workflows. At Apple, built the Classifier & Recommendation System processing customer feedback across macOS, iOS, and tvOS.
+Engineering Rhythm
+Coach teams to ship faster with less friction. At Apple, moved from fortnightly releases to daily continuous delivery. At New Relic, established onboarding that got new hires shipping in their first week. At Atlassian, built 24/7 on-call and incident management practices.
+Full Product Build
+From napkin sketch to revenue. Not just code — positioning, operations, team. At Scout Fuel, I partnered with co-founders from PMF discovery through production: built the MVP, automated fuel pricing ingestion across North America, set up customer reporting. They now distribute 5M+ gallons/month.
+Team Building
+Build and lead the engineering team as your business grows. At Atlassian, led 10 engineers on the Experimentation Platform (P99 5ms, 24/7 on-call). At New Relic, built a team of 8 driving $1MM quarterly self-serve revenue. At Apple, scaled from 3 to 80 web instances + 94 background workers. At Scout Fuel, hired and coached the team that built the first marketable version.
+The Writing
+The Auditability Gap
+December 29, 2025
+We've built systems that can't explain themselves. The problem isn't accuracy. It's auditability. When it's wrong — and it will be wrong — can you explain what happened?
+What Your Sleep Knows About Tomorrow
+December 18, 2025
+Turns out my body has been keeping receipts. Sleep quality predicts next-day stress with uncomfortable accuracy. When restorative sleep drops below 30%, average stress jumps to 38. Above 45%? It's 24.
+When AI Replaces Dashboards
+December 14, 2025
+My feed is full of Takes™ about when AI will replace us. I'm more interested in when it replaces dashboards. The charts are fine. However, a clear explanation would be better.
+
+",Weak fit,"Shared interest in dspy, and provides ai build services for clients building ai workflows and agent systems. May need help doing prompt optimization on client systems that are not already in dspy"
+tom-doerr,Tom Doerr,https://github.com/tom-doerr,tom-doerr/dspy_nodes,"Description:
+Prolific AI developer in python with multiple repos achieving 200+ stars, including building dspy with ComfyUI, and a command-line AI tool with 1k+ stars
+Has 130k followers to whom he shares various helpful repositories - they seem pretty broad for developers of many different types 
+Contact Card
+Email: tomdoerr96@gmail.com
+https://www.linkedin.com/in/tom-d%C3%B6rr-912607126/ 
+Twitter: @tom_doerr with 100k followers
+
+What he might need
+There isn’t a clear opportunity to reach out to him about but he might be interested in a dspy prompt optimization framework that’s compatible with any AI module framework
+
+===
+Raw context
+===
+
+Popular repositories
+zsh_codex
+This is a ZSH plugin that enables you to use OpenAI's Codex AI in the command line.
+ Python  1.7k  99
+codex-readme
+Revolutionize your project documentation with the Codex-README generator, utilizing OpenAI's Codex for intelligent README creation.
+ Python  403  22
+vim_codex
+Supercharge your Vim editor with AI-powered code completion using OpenAI Codex. Boost productivity and save time with intelligent suggestions.
+ Python  285  33
+dotfiles
+Contains my configuration files
+ Shell  277  20
+perplexity_search
+A powerful Python tool for performing technical searches using the Perplexity API, optimized for retrieving precise facts, code examples, and numerical data.
+ Python  212  14
+dspy_nodes
+WIP - Allows you to create DSPy pipelines using ComfyUI
+ Python  199  10
+
+@tom_doerr twitter
+2,428 Following
+138.7K Followers
+Follow for posts about GitHub repos, DSPy, and agents
+Subscribe for top posts
+DM to share your AI project (Due to volume of DMs I'll prioritize subscribers)
+",Weak fit,"He’s a prolific AI developer in python with multiple repos achieving 200+ stars, including building dspy with ComfyUI, and a command-line AI tool with 1k+ stars. However, there isn’t a clear opportunity to reach out to him about, and he may be too famous to respond."
