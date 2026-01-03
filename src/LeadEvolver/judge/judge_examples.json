@@ -1,0 +1,65 @@
+[
+  {
+    "name": "Julian Ghadially",
+    "username": "julianghadially",
+    "context": "Raw context\nFrom linkedin:\n\n\nFounder\nThe Product LLM · Full-time\nOct 2023 - Present · 2 yrs 4 mos\nAustin, Texas, United States\nWe help e-commerce software companies find exact product matches on any website at low cost. Our matching models exceed 95% accuracy and find 2 out of 3 known products for a tenth of the price as competitors. Search millions of records without batting an eye!\nVisit https://www.theproductllm.com for more details. (Formerly Margin Geek)\n\n\n\n\nFrom github:\njulianghadially\n 4 followers · 2 following\nThe Product LLM\nhttps://www.theproductllm.com\nin/julianghadially\n\n\nPinned Repositories:\nFactChecker Public\nSelf-improving fact checkers with DSPy\n\n\nFactChecker is a DSPy-based fact verification system that assesses the factual correctness of language model outputs. Unlike simple LLM-as-judge approaches that share biases with the models they evaluate, FactChecker grounds its judgments in external evidence through iterative web search.\nResults Summary:\nDSPy + GEPA optimization improved FactChecker performance relative to the unoptimized FactChecker system. On current event claims, FactChecker went from 91% to 96% accuracy on predictions made, and added 10-18 percentage points to each class-specific recall\nFactChecker verifies and refutes way more claims than the baseline model. On current event claims, FactChecker tied the base model on accuracy on predictions made, but added 21-66 percentage points to each class-specific recall\nOn the 2023 FacTools-QA dataset, All systems performed roughly the same accuracy on predictions cases: 89% vs 88% vs. 91% for optimized, unoptimized, and baseline, respectively. Three explanations come to mind. Either GPT-5-mini has been trained on this 2023 data set, or the data set is too easy, or GPT-5-mini has very good recall.",
+    "icp_match": "strong_fit",
+    "rationale": "Already invested in self improvement prompt optimization, based on DSPY work on FactChecker project. Works as a founder at a small AI-native startup, and might need help with non-groundtruth guided optimization, or prompt optimization outside of dspy."
+  },
+  {
+    "name": "Mike Taylor",
+    "username": "hammer-mt",
+    "context": "Description:\nTechnical marketer with a marketer education agency for developing technical skills for other marketers, including how to work with and build AI workflows.\nCompany & role: Founder of askRally.com, a virtual audiuence simulator for synthetic market research\n\nRelevant Past projects\nFounder of Saxifrage, an Experiment Lab where he ran Prompt Engineering tests with Generative AI models\nBuilt AI personas to respond to surveys for marketers, which the markets under the brand name “ask rally.”\nBuilt a user interface for training a DSPY system - “DSPyUI” (206 stars)\nBuilt a prompt testing library, “thumb” with 28 stars\n \nWhat Mike might need\nMike helps marketers with automated personas for completing surveys.  many of these survey responses would be non-ground truth output, which dspy cannot handle. he may be interested in a framework that allows him to use a dspy type of construct, but on non-ground Truth data\nSeparately, he used to help marketers build applications, and he still might. Many of those marketers might want to simplify the process of building evaluation data sets for DSPY. We could approach Mike about his pain points with DSPY and what could be improved in a competing framework. – for example, we could guide DSPY with agent as a judge that requires fewer human labeled examples.",
+    "icp_match": "strong_fit",
+    "rationale": "Already invested in self-improving prompt optimization, and likely has pain points around AI survey responders, which output non-ground truth and/or building eval sets efficiently, which we could help him with via consulting services. "
+  },
+  {
+    "name": "Karel D'Oosterlinck",
+    "username": "KarelDO",
+    "context": "Company & role: Member of Technical Staff @ OpenAI\n\nPast experience:\nPhD student in NLP at Ghent University\nIn-Context Learning for eXtreme Multi-Label Classification (XMC) using only a handful of examples.\n\nStopping profile since ICP match is not a fit.",
+    "icp_match": "not_a_fit",
+    "rationale": "Part of a big tech house (openai), which is excluded from ICP"
+  },
+  {
+    "name": "Avishek Biswas",
+    "username": "avbiswas",
+    "context": "Description:\nWorks on AI at a small company that builds AI personas. \nAvishek is also a prolific deep learning AI youtuber\nMS, Computer sciences, Clemson\nLives in India\nCompany & role: Senior Deep Learning Engineer @ Socialtrait, a platform that constructs virtual AI persona communities that mirror specific demographic and psychographic profiles. These communities engage with product concepts through structured methodologies like in-depth interviews, focus group discussions, and surveys, all moderated by AI. Company has 27 associated people on linkedin.\n\nRelevant Past projects\nCreate a popular Context Engineering Course with DSPy\nCreated a Memory-Enabled Chatbot with DSPy\n \nWhat Avishek might need\nAI personas or a non-ground truth use case that might  benefit from prompt optimization support, which he enjoys using based on his past projects",
+    "icp_match": "weak_fit",
+    "rationale": "Avishek is highly experienced in prompt optimization with dspy, and has a non-ground truth use case that he might need support with. He could also be a partner via his Youtube channel. This would be a strong match except that he’s based in India right now."
+  },
+  {
+    "name": "Leonard Tang",
+    "username": "leonardtang",
+    "context": "Description:\nCo-founder and CEO of Haize Labs. We are solving the ultimate extant problem in AI: ensuring its reliability, quality, and alignment for any application. You might also know of us for our red-teaming work.\nCompany & role: Co-Founder and CEO, Haize Labs, a small AI services company\n\nRelevant Past projects\nRed-Teaming Language Models with DSPy (248 stars). Where he performed non-groundtruth optimization\nJailbreaking llama 3 \n \nWhat Leonard might need\nMultiple outcome metrics & tradeoffs between them\nPrompt optimization outside of dspy\nNon ground truth agents",
+    "icp_match": "strong_fit",
+    "rationale": "Builds AI workflows at a small AI Services company, focused on getting high reliability for clients, which absolutely requires prompt optimization"
+  },
+  {
+    "name": "Sean Chatman",
+    "username": "seanchatmangpt",
+    "context": "Prolific coder focused on rust, javascript, and other languages. some python.",
+    "icp_match": "not_a_fit",
+    "rationale": "Prolific coder focused on rust, javascript, and other languages. some python but not really a python developer. doesnt seem to be building ai workflows in python"
+  },
+  {
+    "name": "Reuven Cohen",
+    "username": "ruvnet",
+    "context": "Company & role: Founder @ Ruv, an AI coaching business which coaches others on building AI systems. Also a Founder @ Agentics Foundation which is a community and foundation for agent AI systems. By bringing together forward-thinking individuals and organizations, they empower members to design, deploy, and manage autonomous agents that enhance human potential through intuitive, accessible interfaces.\nPast experience:\nFounder of rUv, an AI coaching business for autonomous AI systems, multi-agent orchestration, and neural network optimization\nBuilt a typescript version of DSPy\nAlpha/Beta Tester for trailblazing companies such as Napster, AOL, and Sierra Online.\nFounder of Enomaly Inc., a pioneering cloud computing company.\nAlpha/Beta tester for OpenAI\nAdvisor to governments and international organizations (US Federal CIO Council)\nCo-author of the first US Cloud Definition with NIST\n\n\nWhat they might need:\nA prompt optimization solution for clients who have already built their systems outside of DSPy",
+    "icp_match": "weak_fit",
+    "rationale": "Independent consultant coaching others on building AI systems, and interested in DSPy after building his own typescript version of DSPy. Weak fit because it is not clear if he is still building code - he may be one step removed from the problem his clients have."
+  },
+  {
+    "name": "Jonathan Haas",
+    "username": "haasonsaas",
+    "context": "Description: Making AI reliability measurable and reproducible\nCompany & role: Member of Security Staff @Writer and Founder of EvalOps, an AI testing and monitoring platform that helps engineering teams ship reliable AI features with confidence.\n\nPast experience: \nBuilt a real-time SDK for detecting and mitigating cognitive risks in LLM interactions as part of EvalOps\nBuilt a MCP server that transforms linear AI reasoning into structured, auditable thought graphs (EvalOps)\nBuilt OCode, a terminal-native AI coding assistant that provides deep codebase intelligence and autonomous task execution (python)\nBuilt an AI-powered email management agent in python with TUI dashboard, CLI commands, and multi-agent categorization system. Supports Gmail integration, rule-based processing, and Docker deployment\nSenior Product Manager at Vanta, leading AI trust management platform that helps businesses earn and prove trust through automating compliance, managing risk, and proving trust continuously.\nCofounder and CEO of ThreatKey Inc, a cybersecurity startup expertising in cybersecurity, compliance automation, and product development.\n\n",
+    "icp_match": "weak_fit",
+    "rationale": "At night and on weekends he runs EvalOps, a company focused on making agents reliable enough for real work, and he built Multiple prompt optimization guides with dspy. His platform may need support on some non-ground truth use cases or multi outcome metric use cases."
+  },
+  {
+    "name": "Adam Lucek",
+    "username": "ALucek",
+    "context": "Company & role: AI Specialist @Cisco and active youtuber with 23k views and many recent videos.\nPast experience: \nBuilt dspy-breakdown in jupyter notebook: Stop prompt engineering! Program your LLMs with DSPy\nBuilt ppt2desc which converts PowerPoint files into semantically rich text using vision language models (100 stars)\nBuilt agentic-memory, which implements cognitive architecture and psychological memory concepts into Agentic LLM Systems\nMinor in Information Systems at UNC School of Information and Library Science\nMinor in Statistics and Analytics at The University of North Carolina at Chapel Hill\n",
+    "icp_match": "not_a_fit",
+    "rationale": "Works as an AI specialist at Cisco, a large enterprise company with long, multi-stakeholder sales and procurement processes, which is excluded from the ICP. Although he does have side project interests they seem to be part of his youtube channel"
+  }
+]

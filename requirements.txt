@@ -1,0 +1,15 @@
+# LeadEvolver Dependencies
+
+# Core
+dspy>=3.0.0
+pydantic>=2.0.0
+
+# Data processing
+pandas>=2.0.0
+
+# Web services
+requests>=2.28.0
+firecrawl-py>=0.0.17
+
+# OpenAI (for DSPy LM)
+openai>=1.0.0
