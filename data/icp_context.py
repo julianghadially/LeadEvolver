@@ -1,3 +1,9 @@
+'''
+ICP profile and offering
+
+These variables are loaded directly into the LeadEvolverPipeline.
+'''
+
 offering = '''
 What is the offering?
 1. Generally, we provide a prompt optimization product that uses an LLM to write the optimal prompt for you, when your system outcome is a “ground truth” outcome. Additionally, we are helpful when:

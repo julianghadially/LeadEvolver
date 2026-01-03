@@ -1,8 +1,8 @@
 import dspy
+from data.icp_context import offering, icp_profile
 from src.LeadEvolver.modules.researcher_module import ResearcherModule
 from src.LeadEvolver.modules.lead_classifier_module import LeadClassifierModule
-from src.data_schema.page_findings import PageFindings
-from typing import Optional, Literal
+from src.data_schema.blackboard import Blackboard
 
 
 class LeadEvolverPipeline(dspy.Module):
@@ -17,7 +17,7 @@ class LeadEvolverPipeline(dspy.Module):
     5. Continues until classification is final or max iterations reached
     """
 
-    MAX_INVESTIGATION_ROUNDS = 3
+    MAX_INVESTIGATION_ROUNDS = 5
 
     def __init__(self):
         super().__init__()
@@ -26,11 +26,9 @@ class LeadEvolverPipeline(dspy.Module):
 
     def forward(
         self,
-        lead_name: str,
         lead_url: str,
-        initial_context: str = "",
-        ideal_customer_profile: Optional[list] = None,
-        offering: Optional[str] = None
+        lead_username: str = "",
+        lead_name: str = ""
     ) -> dict:
         """
         Run the full lead evolution pipeline.
@@ -38,43 +36,39 @@ class LeadEvolverPipeline(dspy.Module):
         Args:
             lead_name: Name of the lead (person or company)
             lead_url: Primary URL for the lead (e.g., GitHub profile)
-            initial_context: Any existing context about the lead
             ideal_customer_profile: List of ICP descriptions
             offering: Description of offering
 
         Returns:
             dict with:
                 - lead_quality: Final classification ("strong_fit", "weak_fit", "not_a_fit")
-                - blackboard: All accumulated research context
-                - page_findings: List of all PageFindings objects
+                - rationale: Rationale for the lead quality classification
+                - blackboard: All accumulated research context (as dict)
                 - investigation_rounds: Number of research rounds performed
-                - rationale: Classification reasoning (from final context)
         """
         # Initialize blackboard with any existing context
-        blackboard = initial_context or ""
-        all_page_findings = []
+        blackboard = Blackboard()
         investigation_rounds = 0
 
         # Initial research goal
-        initial_goal = f"Research {lead_name}. Start by exploring their profile at {lead_url}. " \
-                       f"Look for: their current role, technical projects, AI/ML experience, " \
-                       f"and any use of DSPy or similar frameworks."
+        initial_goal = f"""Find information related to whether they might be an ideal customer, by visiting only the initial url (profile page). 
+Lead: {lead_username}
+Name: {lead_name}
+Initial Url: {lead_url}""" \
 
         # Perform initial research
-        research_result = self.researcher(
+        blackboard = self.researcher(
             research_goal=initial_goal,
             blackboard=blackboard
         )
-        blackboard = research_result["updated_blackboard"]
-        all_page_findings.extend(research_result["page_findings"])
         investigation_rounds += 1
 
         # Classification loop with iterative investigation
         for _ in range(self.MAX_INVESTIGATION_ROUNDS):
-            # Attempt classification
+            # Attempt classification (classifier expects string)
             classification = self.classifier(
-                lead_context=blackboard,
-                ideal_customer_profile=ideal_customer_profile,
+                lead_context=blackboard.to_string(),
+                ideal_customer_profile=icp_profile,
                 offering=offering
             )
 
@@ -82,46 +76,31 @@ class LeadEvolverPipeline(dspy.Module):
             if classification["is_final"]:
                 return {
                     "lead_quality": classification["lead_quality"],
-                    "blackboard": blackboard,
-                    "page_findings": all_page_findings,
+                    "rationale": classification["rationale"],
+                    "blackboard": blackboard.to_dict(),
                     "investigation_rounds": investigation_rounds,
-                    "rationale": self._extract_rationale(blackboard, classification["lead_quality"])
                 }
 
             # If more investigation is needed
             if classification["further_investigation"]:
-                research_result = self.researcher(
+                blackboard = self.researcher(
                     research_goal=classification["further_investigation"],
                     blackboard=blackboard
                 )
-                blackboard = research_result["updated_blackboard"]
-                all_page_findings.extend(research_result["page_findings"])
                 investigation_rounds += 1
 
         # If we've exhausted iterations, make a final classification
         final_classification = self.classifier(
-            lead_context=blackboard + "\n\n[Note: Maximum investigation rounds reached. Make final classification with available information.]",
-            ideal_customer_profile=ideal_customer_profile,
+            lead_context="\n\n[RESEARCH EXHAUSTED: Maximum investigation rounds reached. Make final classification with available information.]\n" + blackboard.to_string() ,
+            ideal_customer_profile=icp_profile,
             offering=offering
         )
 
         return {
             "lead_quality": final_classification["lead_quality"] or "not_a_fit",
-            "blackboard": blackboard,
-            "page_findings": all_page_findings,
+            "rationale": final_classification["rationale"],
+            "blackboard": blackboard.to_dict(),
             "investigation_rounds": investigation_rounds,
-            "rationale": self._extract_rationale(blackboard, final_classification["lead_quality"])
         }
 
-    def _extract_rationale(self, blackboard: str, lead_quality: str) -> str:
-        """
-        Generate a brief rationale for the classification based on the blackboard.
-        """
-        # For now, return a summary. In a full implementation, this could use
-        # another LLM call to summarize the key factors.
-        if not blackboard:
-            return f"Classified as {lead_quality} based on limited information."
-
-        # Take last 500 chars of blackboard as context hint
-        context_hint = blackboard[-500:] if len(blackboard) > 500 else blackboard
-        return f"Classified as {lead_quality} based on research findings. Key context: {context_hint[:200]}..."
+    

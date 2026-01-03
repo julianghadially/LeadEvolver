@@ -18,5 +18,6 @@ from src.context_.context import openai_key
 from src.LeadEvolver.modules.lead_evolver_pipeline import LeadEvolverPipeline
 from src.LeadEvolver.modules.researcher_module import ResearcherModule
 from src.LeadEvolver.modules.lead_classifier_module import LeadClassifierModule
+from src.context_.settings import lm_model
 
 #TBD: will create main function later.

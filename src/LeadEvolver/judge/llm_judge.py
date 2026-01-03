@@ -10,6 +10,7 @@ from typing import Literal, Optional
 from openai import OpenAI
 from src.context_.context import openai_key
 from data.icp_context import offering, icp_profile
+from src.context_.settings import judge_model
 
 from .judge_examples import get_formatted_examples
 
@@ -29,13 +30,13 @@ class LLMJudge:
 
     def __init__(
         self,
-        model: str = "gpt-5-mini"
+        model: str = judge_model
     ):
         """
         Initialize the LLM Judge.
 
         Args:
-            model: The model to use for judging (default: gpt-5-mini)
+            model: The model to use for judging (default: see src.context_.settings.py)
             temperature: Temperature for generation (default: 0.0 for determinism)
             api_key: OpenAI API key (defaults to OPENAI_API_KEY env var)
         """

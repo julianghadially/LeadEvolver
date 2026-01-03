@@ -7,6 +7,7 @@ Test metric: Direct comparison to human labels
 
 from typing import Any, Optional
 from .llm_judge import LLMJudge
+from src.data_schema.blackboard import Blackboard
 
 
 # Singleton judge instance to avoid repeated initialization
@@ -55,7 +56,9 @@ def compute_classification_score(predicted: str, expected: str) -> float:
 def training_metric(
     example: Any,
     prediction: Any,
-    trace: Optional[Any] = None
+    trace: Optional[Any] = None,
+    pred_name: Optional[str] = None,
+    pred_trace: Optional[Any] = None
 ) -> float:
     """
     DSPy-compatible metric for TRAINING set evaluation.
@@ -67,7 +70,9 @@ def training_metric(
     Args:
         example: DSPy example containing lead context
         prediction: Pipeline prediction with 'lead_quality' and 'blackboard' fields
-        trace: Optional trace object (unused, for DSPy compatibility)
+        trace: Optional trace object (for DSPy compatibility)
+        pred_name: Optional predictor name (for GEPA compatibility)
+        pred_trace: Optional predictor trace (for GEPA compatibility)
 
     Returns:
         Score between 0.0 and 1.0
@@ -75,54 +80,30 @@ def training_metric(
     judge = get_judge()
 
     # Extract context from prediction (the researched context)
-    if hasattr(prediction, 'blackboard'):
-        lead_context = prediction.blackboard
-    elif isinstance(prediction, dict):
-        lead_context = prediction.get('blackboard', '')
-    else:
-        lead_context = getattr(prediction, 'blackboard', '')
+    blackboard = Blackboard.from_dict(prediction.get('blackboard', '')).to_string()
+    lead_quality = prediction.get('lead_quality', None)
+    rationale = prediction.get('rationale', None)
 
-    # If no blackboard, try to use example context
-    if not lead_context:
-        if hasattr(example, 'context'):
-            lead_context = example.context
-        elif isinstance(example, dict):
-            lead_context = example.get('context', '')
-
-    # Extract predicted classification
-    if hasattr(prediction, 'lead_quality'):
-        predicted = prediction.lead_quality
-    elif isinstance(prediction, dict):
-        predicted = prediction.get('lead_quality')
-    else:
-        predicted = getattr(prediction, 'lead_quality', None)
-
-    if predicted is None or not lead_context:
+    if lead_quality is None:
         return 0.0
-
-    # Get rationale if available
-    if hasattr(prediction, 'rationale'):
-        rationale = prediction.rationale
-    elif isinstance(prediction, dict):
-        rationale = prediction.get('rationale')
-    else:
-        rationale = None
 
     # Get judge's assessment (NO ground truth used here)
     judge_classification = judge.judge(
-        lead_context=lead_context,
-        proposed_classification=predicted,
+        lead_context=blackboard,
+        proposed_classification=lead_quality,
         proposed_rationale=rationale
     )
 
     # Score based on alignment with judge
-    return compute_classification_score(predicted, judge_classification)
+    return compute_classification_score(lead_quality, judge_classification)
 
 
 def test_set_metric(
     example: Any,
     prediction: Any,
-    trace: Optional[Any] = None
+    trace: Optional[Any] = None,
+    pred_name: Optional[str] = None,
+    pred_trace: Optional[Any] = None
 ) -> float:
     """
     DSPy-compatible metric for TEST set evaluation.
@@ -133,30 +114,23 @@ def test_set_metric(
     Args:
         example: DSPy example containing ground truth in 'icp_match' field
         prediction: Pipeline prediction with 'lead_quality' field
-        trace: Optional trace object (unused, for DSPy compatibility)
+        trace: Optional trace object (for DSPy compatibility)
+        pred_name: Optional predictor name (for GEPA compatibility)
+        pred_trace: Optional predictor trace (for GEPA compatibility)
 
     Returns:
         Score between 0.0 and 1.0
     """
     # Extract ground truth from example
-    if hasattr(example, 'icp_match'):
-        ground_truth = example.icp_match
-    elif isinstance(example, dict):
-        ground_truth = example.get('icp_match')
-    else:
-        ground_truth = getattr(example, 'icp_match', None)
+    
+    ground_truth = example.icp_match
 
     if ground_truth is None:
+        print(f"WARNING: No ground truth found for example: {example.lead_username}")
         return 0.0
 
     # Extract prediction
-    if hasattr(prediction, 'lead_quality'):
-        predicted = prediction.lead_quality
-    elif isinstance(prediction, dict):
-        predicted = prediction.get('lead_quality')
-    else:
-        predicted = getattr(prediction, 'lead_quality', None)
-
+    predicted = prediction['lead_quality']
     if predicted is None:
         return 0.0
 

@@ -3,7 +3,7 @@ from src.LeadEvolver.signatures.Researcher import Researcher
 from src.services.serper_service import SerperService, SearchResult
 from src.services.firecrawl_service import FirecrawlService, ScrapedPage
 from src.data_schema.page_findings import PageFindings
-from typing import Optional
+from src.data_schema.blackboard import Blackboard
 
 def search(query: str) -> str:
     """Search the web using Google. Returns a list of search results with title, link, and snippet.
@@ -53,31 +53,35 @@ class ResearcherModule(dspy.Module):
     Each page is limited to 10k characters.
     """
 
-    MAX_PAGES = 20
+    MAX_ACTIONS = 8 #incl scrape and search
 
     def __init__(self):
         super().__init__()
         self.researcher = dspy.ReAct(
             Researcher,
             tools=[search, scrape],
-            max_iters=5
+            max_iters=self.MAX_ACTIONS
         )
 
-    def forward(self, research_goal: str, blackboard: str) -> dict:
+    def forward(self, research_goal: str, blackboard: Blackboard) -> Blackboard:
         """
         Execute research based on the goal and existing blackboard context.
 
         Args:
             research_goal: The research goal(s) to investigate
-            blackboard: Existing context/findings about the lead
+            blackboard: Blackboard instance with existing context/findings about the lead
 
         Returns:
-            dict with 'page_findings' list and 'updated_blackboard' string
+            Blackboard object as dict
         """
-        result = self.researcher(research_goal=research_goal, blackboard=blackboard)
+        blackboard_str = blackboard.to_string()
 
-        # Extract page_findings from result
+        # Run researcher
+        result = self.researcher(research_goal=research_goal, blackboard=blackboard_str)
+
+        # Extract findings from result
         page_findings = result.page_findings
+        research_findings = result.research_findings
 
         # Handle case where page_findings might be returned as a list or single object
         if page_findings is None:
@@ -85,17 +89,9 @@ class ResearcherModule(dspy.Module):
         elif not isinstance(page_findings, list):
             page_findings = [page_findings]
 
-        # Update blackboard with new findings
-        updated_blackboard = blackboard
-        for finding in page_findings:
-            if isinstance(finding, PageFindings):
-                updated_blackboard += "\n" + finding.to_string()
-            elif isinstance(finding, dict):
-                # Handle dict representation
-                pf = PageFindings(**finding)
-                updated_blackboard += "\n" + pf.to_string()
+        # Process new findings using Blackboard methods
+        blackboard.add_page_findings(page_findings)
+        if research_findings:
+            blackboard.add_research_findings(research_findings)
 
-        return {
-            "page_findings": page_findings,
-            "updated_blackboard": updated_blackboard
-        }
+        return blackboard

@@ -54,3 +54,4 @@ class Researcher(Signature):
     research_goal: str = InputField(desc="A research goal or goals for gathering more information")
     blackboard: str = InputField(desc="A blackboard of information that is already known about the lead")
     page_findings: list[PageFindings] = OutputField(desc="a PageFindings object that contains the findings from each page visited")
+    research_findings: str = OutputField(desc="Outcome and discussion of the research, as it pertains to the research goal(s)")

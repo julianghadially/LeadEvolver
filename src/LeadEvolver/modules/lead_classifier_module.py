@@ -61,6 +61,7 @@ class LeadClassifierModule(dspy.Module):
 
         lead_quality = result.lead_quality
         further_investigation = result.further_investigation
+        rationale = result.rationale
 
         # Determine if this is a final classification or needs more research
         is_final = lead_quality is not None and (
@@ -71,6 +72,7 @@ class LeadClassifierModule(dspy.Module):
 
         return {
             "lead_quality": lead_quality,
+            "rationale": rationale,
             "further_investigation": further_investigation if not is_final else None,
             "is_final": is_final
         }

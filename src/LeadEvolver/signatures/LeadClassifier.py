@@ -21,6 +21,7 @@ class LeadClassifier(Signature):
     ideal_customer_profile: list = InputField(desc="A description of our ideal customer profile(s)")
     offering: str = InputField(desc="A description of the offering being sold to the lead")
     lead_quality: Optional[Literal["strong_fit","weak_fit","not_a_fit"]] = OutputField(desc="lead quality class")
+    rationale: Optional[str] = OutputField(desc="rationale for the lead quality classification")
     further_investigation: Optional[str] = OutputField(desc="A research goal (or goals) for further investigation, if there is not enough information to make a lead quality classification")
 
     

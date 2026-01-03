@@ -1,89 +1,115 @@
 """
-Experiment #1: Evaluating lead classification with LLM judge
+Experiment #1: Evaluating LLM-judge-optimized lead classification
 
-This experiment tests how well a ground truth LLM judge can tune a
-web research agent + classification system.
+This experiment compares:
+- Baseline: Unoptimized pipeline scored on test set (human labels)
+- Treatment: Optimized pipeline scored on test set (human labels)
+
+The optimization uses an LLM judge with few-shot examples but NO access
+to ground truth labels for training examples.
 
 Setup:
-- Judge examples are defined in the CSV (judge_example=True) and loaded by the llm judge itself
-- Train/test split is defined in the CSV (training_set column)
-- Training examples: Compare system output to LLM-judged classifications
-- Test examples: Compare system output to human labels directly
-
-Assessment:
-- Run the research + classification system on leads in github_users.csv
-- Training examples use LLM judge for scoring
-- Test examples are compared to human labels directly
+- Train/test split defined in CSV (training_set column)
+- Judge examples defined in CSV (judge_example column)
+- Optimization uses training_metric (LLM judge)
+- Evaluation uses test_set_metric (human labels)
 """
 
 import dspy
-import pandas as pd
 from pathlib import Path
+from typing import Dict, List, Any
 
+from src.LeadEvolver.data_pipeline import prepare_train_test_split
+from src.LeadEvolver.optimizer import optimize_pipeline
 from src.LeadEvolver.judge import (
     LLMJudge,
     training_metric,
     test_set_metric,
     compute_classification_score
 )
-from src.LeadEvolver.judge.extract_judge_examples import normalize_classification
 
 
-# Path to data (experiment_1.py -> experiments -> LeadEvolver -> src -> LeadEvolver root)
-DATA_PATH = Path(__file__).parent.parent.parent.parent / "data" / "github_users.csv"
-
-
-def load_dataset(csv_path: str = None) -> pd.DataFrame:
-    """Load the github_users dataset."""
-    path = csv_path or DATA_PATH
-    return pd.read_csv(path)
-
-
-def prepare_dataset_for_experiment(df: pd.DataFrame) -> tuple:
+def evaluate_on_test_set(
+    pipeline: dspy.Module,
+    test_examples: List[dspy.Example],
+    label: str = "Pipeline"
+) -> Dict[str, Any]:
     """
-    Prepare the dataset for Experiment #1.
-
-    Uses CSV columns for assignment:
-    - training_set: True for training, False for test
-    - judge_example: True for judge few-shot examples (handled separately in judge folder)
+    Evaluate a pipeline on the test set using human labels.
 
     Args:
-        df: DataFrame with lead data
+        pipeline: The pipeline to evaluate
+        test_examples: Test examples with ground truth labels
+        label: Label for logging
 
     Returns:
-        Tuple of (train_examples, test_examples) as dspy.Example lists
+        Dict with scores and predictions
     """
-    # Filter to only rows with labels
-    labeled_df = df[df['icp_match'].notna() & (df['icp_match'] != '')]
+    scores = []
+    predictions = []
 
-    # Split based on training_set column (values: "train" or "test")
-    train_df = labeled_df[labeled_df['training_set'].str.lower() == 'train']
-    test_df = labeled_df[labeled_df['training_set'].str.lower() == 'test']
+    print(f"\nEvaluating {label} on test set ({len(test_examples)} examples)...")
 
-    # Convert to dspy.Example objects
-    def to_examples(data: pd.DataFrame) -> list:
-        examples = []
-        for _, row in data.iterrows():
-            ex = dspy.Example(
-                username=row['username'],
-                name=row['name'] if pd.notna(row['name']) else row['username'],
-                url=row['url'],
-                context=row.get('context', ''),
-                icp_match=normalize_classification(row['icp_match']),
-                icp_match_rationale=row.get('icp_match_rationale', '')
-            ).with_inputs('username', 'name', 'url', 'context')
-            examples.append(ex)
-        return examples
+    for i, example in enumerate(test_examples):
+        try:
+            result = pipeline(
+                lead_url=example.lead_url,
+                lead_username=example.lead_username,
+                lead_name=example.lead_name
+            )
 
-    return to_examples(train_df), to_examples(test_df)
+            predicted = result['lead_quality']
+            rationale = result['rationale']
+            ground_truth = example.icp_match
+
+            score = compute_classification_score(predicted, ground_truth)
+            scores.append(score)
+            predictions.append({
+                "name": example.name,
+                "predicted": predicted,
+                "rationale": rationale,
+                "ground_truth": ground_truth,
+                "score": score
+            })
+
+            print(f"  [{i+1}/{len(test_examples)}] {example.name}: "
+                  f"Predicted={predicted}, Truth={ground_truth}, Score={score:.2f}")
+
+        except Exception as e:
+            print(f"  [{i+1}/{len(test_examples)}] {example.name}: Error - {e}")
+            scores.append(0.0)
+            predictions.append({
+                "name": example.name,
+                "predicted": None,
+                "rationale": None,
+                "ground_truth": example.icp_match,
+                "score": 0.0,
+                "error": str(e)
+            })
+
+    accuracy = sum(scores) / len(scores) if scores else 0.0
+
+    return {
+        "label": label,
+        "accuracy": accuracy,
+        "scores": scores,
+        "predictions": predictions
+    }
 
 
-def run_experiment_1(lm_model: str = "openai/gpt-5-mini"):
+def run_experiment_1(
+    lm_model: str = "openai/gpt-5-mini",
+    optimizer_type: str = "mipro"
+) -> Dict[str, Any]:
     """
-    Run Experiment #1: Evaluate LLM judge with limited human labels.
+    Run Experiment #1: Compare unoptimized vs optimized pipeline.
 
     Args:
         lm_model: The language model to use
+        optimizer_type: "mipro" or "bootstrap"
+
+    Returns:
+        Dict with results for all conditions
     """
     from src.LeadEvolver.modules.lead_evolver_pipeline import LeadEvolverPipeline
     from src.context_.context import openai_key
@@ -92,88 +118,90 @@ def run_experiment_1(lm_model: str = "openai/gpt-5-mini"):
     lm = dspy.LM(lm_model, api_key=openai_key)
     dspy.configure(lm=lm)
 
-    # Load and prepare data
-    df = load_dataset()
-    train_examples, test_examples = prepare_dataset_for_experiment(df)
+    # Load data
+    train_examples, test_examples = prepare_train_test_split()
 
-    print(f"Experiment #1 Setup:")
-    print(f"  Training examples: {len(train_examples)}")
-    print(f"  Test examples: {len(test_examples)}")
+    print("=" * 60)
+    print("EXPERIMENT #1: LLM-Judge-Optimized Lead Classification")
+    print("=" * 60)
+    print(f"Training examples: {len(train_examples)}")
+    print(f"Test examples: {len(test_examples)}")
+    print(f"Optimizer: {optimizer_type}")
     print()
 
-    # Initialize pipeline and judge
-    pipeline = LeadEvolverPipeline()
-    judge = LLMJudge()
+    results = {}
 
-    # Run evaluation on training samples
-    train_scores = []
+    # =========================================================================
+    # BASELINE: Unoptimized pipeline
+    # =========================================================================
+    print("-" * 60)
+    print("BASELINE: Unoptimized Pipeline")
+    print("-" * 60)
 
-    print("Evaluating on training set (LLM judge)...")
-    for i, example in enumerate(train_examples):
-        try:
-            result = pipeline(
-                lead_name=example.name,
-                lead_url=example.url,
-                initial_context=example.context
-            )
+    baseline_pipeline = LeadEvolverPipeline()
+    results["baseline_unoptimized"] = evaluate_on_test_set(
+        baseline_pipeline,
+        test_examples,
+        label="Unoptimized"
+    )
 
-            predicted = result['lead_quality']
+    # =========================================================================
+    # TODO: Additional baselines with manually prompted modules
+    # =========================================================================
+    # Placeholder for future baselines:
+    # - baseline_manual_v1: Manually crafted prompts (version 1)
+    # - baseline_manual_v2: Manually crafted prompts (version 2)
+    # - baseline_zero_shot: Zero-shot without any examples
+    #
+    # Example:
+    # results["baseline_manual_v1"] = evaluate_on_test_set(
+    #     ManuallyPromptedPipeline(),
+    #     test_examples,
+    #     label="Manual Prompts V1"
+    # )
 
-            # Use judge to evaluate
-            judge_classification = judge.judge(
-                lead_context=result['blackboard'],
-                proposed_classification=predicted,
-                proposed_rationale=result.get('rationale')
-            )
+    # =========================================================================
+    # TREATMENT: Optimized pipeline
+    # =========================================================================
+    print("-" * 60)
+    print("TREATMENT: Optimizing Pipeline with LLM Judge")
+    print("-" * 60)
 
-            score = compute_classification_score(predicted, judge_classification)
-            train_scores.append(score)
+    # Start with fresh pipeline for optimization
+    pipeline_to_optimize = LeadEvolverPipeline()
 
-            print(f"  [{i+1}/{len(train_examples)}] {example.name}: "
-                  f"Predicted={predicted}, Judge={judge_classification}, Score={score:.2f}")
-        except Exception as e:
-            print(f"  [{i+1}/{len(train_examples)}] {example.name}: Error - {e}")
-            train_scores.append(0.0)
+    optimized_pipeline = optimize_pipeline(
+        pipeline_to_optimize,
+        trainset=train_examples,
+        optimizer_type=optimizer_type,
+        verbose=True
+    )
 
-    # Run evaluation on test samples (direct comparison to human labels)
-    print("\nEvaluating on test set (direct comparison to human labels)...")
-    test_scores = []
+    results["treatment_optimized"] = evaluate_on_test_set(
+        optimized_pipeline,
+        test_examples,
+        label="Optimized"
+    )
 
-    for i, example in enumerate(test_examples):
-        try:
-            result = pipeline(
-                lead_name=example.name,
-                lead_url=example.url,
-                initial_context=example.context
-            )
-
-            predicted = result['lead_quality']
-            ground_truth = example.icp_match
-
-            score = compute_classification_score(predicted, ground_truth)
-            test_scores.append(score)
-
-            print(f"  [{i+1}/{len(test_examples)}] {example.name}: "
-                  f"Predicted={predicted}, Truth={ground_truth}, Score={score:.2f}")
-        except Exception as e:
-            print(f"  [{i+1}/{len(test_examples)}] {example.name}: Error - {e}")
-            test_scores.append(0.0)
-
-    # Summary
-    print("\n" + "="*60)
+    # =========================================================================
+    # SUMMARY
+    # =========================================================================
+    print("\n" + "=" * 60)
     print("EXPERIMENT #1 RESULTS")
-    print("="*60)
-    if train_scores:
-        print(f"Training set accuracy (LLM judge): {sum(train_scores)/len(train_scores):.2%}")
-    if test_scores:
-        print(f"Test set accuracy (human labels): {sum(test_scores)/len(test_scores):.2%}")
+    print("=" * 60)
 
-    return {
-        "train_accuracy": sum(train_scores)/len(train_scores) if train_scores else 0,
-        "test_accuracy": sum(test_scores)/len(test_scores) if test_scores else 0,
-        "train_scores": train_scores,
-        "test_scores": test_scores
-    }
+    for key, result in results.items():
+        print(f"{result['label']}: {result['accuracy']:.2%}")
+
+    # Calculate improvement
+    baseline_acc = results["baseline_unoptimized"]["accuracy"]
+    treatment_acc = results["treatment_optimized"]["accuracy"]
+    improvement = treatment_acc - baseline_acc
+
+    print()
+    print(f"Improvement: {improvement:+.2%}")
+
+    return results
 
 
 if __name__ == "__main__":
