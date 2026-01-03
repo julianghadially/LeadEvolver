@@ -16,6 +16,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import List, Optional, Literal
 from src.context_.settings import reflection_lm, lm_model
+import mlflow
 
 from src.LeadEvolver.judge import training_metric
 from src.LeadEvolver.data_pipeline import prepare_train_test_split
@@ -101,16 +102,58 @@ def optimize_pipeline(
     return optimized
 
 if __name__ == "__main__":
+    import argparse
     from src.LeadEvolver.modules.lead_evolver_pipeline import LeadEvolverPipeline
     from src.context_.context import openai_key
     import dspy
+    
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description="Optimize LeadEvolver pipeline using DSPy")
+    parser.add_argument(
+        "--use-mlflow",
+        action="store_true",
+        default=False,
+        help="Enable MLflow logging (default: False)"
+    )
+    parser.add_argument(
+        "--experiment-name",
+        type=str,
+        default="LeadEvolver_Optimization",
+        help="MLflow experiment name (default: LeadEvolver_Optimization)"
+    )
+    args = parser.parse_args()
     
     # Configure DSPy
     lm = dspy.LM(lm_model, api_key=openai_key)
     dspy.configure(lm=lm)
     
-    # Create and optimize pipeline
     pipeline = LeadEvolverPipeline()
-    optimized = optimize_pipeline(pipeline)
     
+    # Load training data for MLflow logging
+    trainset, testset = prepare_train_test_split()
+    
+    # Start MLflow run if requested
+    if args.use_mlflow:
+        mlflow.dspy.autolog(log_compiles=False, log_evals=True, log_traces_from_compile=True)
+        mlflow.set_tracking_uri("http://localhost:5000")
+        mlflow.set_experiment(args.experiment_name)
+        with mlflow.start_run(run_name=f"gepa_{datetime.now().strftime('%Y%m%d_%H%M%S')}"):
+            # Run optimization
+            optimized = optimize_pipeline(pipeline)
+            
+            # Log artifacts (program and metadata are saved in optimize_pipeline)
+            output_path = Path("src/optimizer/output")
+            if output_path.exists():
+                # Find the most recent files to log
+                program_files = sorted(output_path.glob("optimized_program_*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+                results_files = sorted(output_path.glob("gepa_optimization_*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+                
+                if program_files:
+                    mlflow.log_artifact(str(program_files[0]), "optimized_programs")
+                if results_files:
+                    mlflow.log_artifact(str(results_files[0]), "metadata")
+            
+    else:
+        # Run without MLflow
+        optimized = optimize_pipeline(pipeline)
     print("Optimized pipeline ready!")

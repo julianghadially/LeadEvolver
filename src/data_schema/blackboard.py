@@ -1,6 +1,4 @@
 from pydantic import BaseModel, Field
-from typing import List, Optional
-from src.data_schema.page_findings import PageFindings
 
 
 class Blackboard(BaseModel):
@@ -37,24 +35,6 @@ class Blackboard(BaseModel):
             parts.append(f"\nPage Findings:\n{self.page_findings}")
         
         return "\n\n".join(parts) if parts else ""
-    
-    def add_page_findings(self, findings: List[PageFindings]) -> None:
-        """
-        Process and add new page findings to the blackboard.
-        
-        Args:
-            findings: List of PageFindings objects to add
-        """
-        if not findings:
-            return
-        
-        for finding in findings:
-            if isinstance(finding, PageFindings):
-                self.page_findings += "\n" + finding.to_string()
-            elif isinstance(finding, dict):
-                # Handle dict representation
-                pf = PageFindings(**finding)
-                self.page_findings += "\n" + pf.to_string()
     
     def add_research_findings(self, research_findings: str) -> None:
         """
@@ -99,4 +79,3 @@ class Blackboard(BaseModel):
             page_findings=data.get("page_findings", ""),
             research_findings=data.get("research_findings", "")
         )
-

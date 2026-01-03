@@ -2,7 +2,6 @@ import dspy
 from src.LeadEvolver.signatures.Researcher import Researcher
 from src.services.serper_service import SerperService, SearchResult
 from src.services.firecrawl_service import FirecrawlService, ScrapedPage
-from src.data_schema.page_findings import PageFindings
 from src.data_schema.blackboard import Blackboard
 
 def search(query: str) -> str:
@@ -72,25 +71,25 @@ class ResearcherModule(dspy.Module):
             blackboard: Blackboard instance with existing context/findings about the lead
 
         Returns:
-            Blackboard object as dict
+            Blackboard object
         """
         blackboard_str = blackboard.to_string()
 
         # Run researcher
         result = self.researcher(research_goal=research_goal, blackboard=blackboard_str)
 
-        # Extract findings from result
-        page_findings = result.page_findings
-        research_findings = result.research_findings
+        # Extract findings from result (now strings, not objects)
+        page_findings = result.page_findings or ""
+        research_findings = result.research_findings or ""
 
-        # Handle case where page_findings might be returned as a list or single object
-        if page_findings is None:
-            page_findings = []
-        elif not isinstance(page_findings, list):
-            page_findings = [page_findings]
+        # Add page findings as string directly to blackboard
+        if page_findings:
+            if blackboard.page_findings:
+                blackboard.page_findings += "\n\n---\n\n" + page_findings
+            else:
+                blackboard.page_findings = page_findings
 
-        # Process new findings using Blackboard methods
-        blackboard.add_page_findings(page_findings)
+        # Add research findings
         if research_findings:
             blackboard.add_research_findings(research_findings)
 

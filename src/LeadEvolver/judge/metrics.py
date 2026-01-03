@@ -22,6 +22,38 @@ def get_judge() -> LLMJudge:
     return _judge_instance
 
 
+def safe_get(obj: Any, key: str, default: Any = None) -> Any:
+    """
+    Safely get a value from an object, handling both dict and attribute access.
+    
+    Args:
+        obj: The object to get the value from (dict or object with attributes)
+        key: The key/attribute name to access
+        default: Default value if key not found
+        
+    Returns:
+        The value, or default if not found
+    """
+    if obj is None:
+        return default
+    
+    # Try dict-style access first
+    if isinstance(obj, dict):
+        return obj.get(key, default)
+    
+    # Try attribute access
+    if hasattr(obj, key):
+        return getattr(obj, key, default)
+    
+    # Try __getitem__ (for dict-like objects)
+    try:
+        return obj[key]
+    except (KeyError, TypeError, IndexError):
+        pass
+    
+    return default
+
+
 def compute_classification_score(predicted: str, expected: str) -> float:
     """
     Compute the score for a classification prediction.
@@ -77,25 +109,42 @@ def training_metric(
     Returns:
         Score between 0.0 and 1.0
     """
-    judge = get_judge()
+    try:
+        judge = get_judge()
 
-    # Extract context from prediction (the researched context)
-    blackboard = Blackboard.from_dict(prediction.get('blackboard', '')).to_string()
-    lead_quality = prediction.get('lead_quality', None)
-    rationale = prediction.get('rationale', None)
+        # Extract values using safe accessor
+        lead_quality = safe_get(prediction, 'lead_quality', None)
+        rationale = safe_get(prediction, 'rationale', None)
+        blackboard_data = safe_get(prediction, 'blackboard', {})
 
-    if lead_quality is None:
+        if lead_quality is None:
+            print(f"DEBUG training_metric: No lead_quality found in prediction: {type(prediction)}")
+            return 0.0
+
+        # Convert blackboard to string
+        if isinstance(blackboard_data, dict):
+            blackboard_str = Blackboard.from_dict(blackboard_data).to_string()
+        elif isinstance(blackboard_data, str):
+            blackboard_str = blackboard_data
+        elif hasattr(blackboard_data, 'to_string'):
+            blackboard_str = blackboard_data.to_string()
+        else:
+            blackboard_str = str(blackboard_data) if blackboard_data else ""
+
+        # Get judge's assessment (NO ground truth used here)
+        judge_classification = judge.judge(
+            lead_context=blackboard_str,
+            proposed_classification=lead_quality,
+            proposed_rationale=rationale
+        )
+
+        # Score based on alignment with judge
+        score = compute_classification_score(lead_quality, judge_classification)
+        return score
+        
+    except Exception as e:
+        print(f"ERROR in training_metric: {e}")
         return 0.0
-
-    # Get judge's assessment (NO ground truth used here)
-    judge_classification = judge.judge(
-        lead_context=blackboard,
-        proposed_classification=lead_quality,
-        proposed_rationale=rationale
-    )
-
-    # Score based on alignment with judge
-    return compute_classification_score(lead_quality, judge_classification)
 
 
 def test_set_metric(
@@ -121,17 +170,23 @@ def test_set_metric(
     Returns:
         Score between 0.0 and 1.0
     """
-    # Extract ground truth from example
-    
-    ground_truth = example.icp_match
+    try:
+        # Extract ground truth from example
+        ground_truth = safe_get(example, 'icp_match', None)
 
-    if ground_truth is None:
-        print(f"WARNING: No ground truth found for example: {example.lead_username}")
+        if ground_truth is None:
+            lead_username = safe_get(example, 'lead_username', 'unknown')
+            print(f"WARNING: No ground truth found for example: {lead_username}")
+            return 0.0
+
+        # Extract prediction
+        predicted = safe_get(prediction, 'lead_quality', None)
+        if predicted is None:
+            print(f"DEBUG test_set_metric: No lead_quality found in prediction: {type(prediction)}")
+            return 0.0
+
+        return compute_classification_score(predicted, ground_truth)
+        
+    except Exception as e:
+        print(f"ERROR in test_set_metric: {e}")
         return 0.0
-
-    # Extract prediction
-    predicted = prediction['lead_quality']
-    if predicted is None:
-        return 0.0
-
-    return compute_classification_score(predicted, ground_truth)

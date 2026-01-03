@@ -3,6 +3,7 @@ from data.icp_context import offering, icp_profile
 from src.LeadEvolver.modules.researcher_module import ResearcherModule
 from src.LeadEvolver.modules.lead_classifier_module import LeadClassifierModule
 from src.data_schema.blackboard import Blackboard
+import traceback
 
 
 class LeadEvolverPipeline(dspy.Module):
@@ -54,14 +55,19 @@ class LeadEvolverPipeline(dspy.Module):
         initial_goal = f"""Find information related to whether they might be an ideal customer, by visiting only the initial url (profile page). 
 Lead: {lead_username}
 Name: {lead_name}
-Initial Url: {lead_url}""" \
+Initial Url: {lead_url}"""
 
         # Perform initial research
-        blackboard = self.researcher(
-            research_goal=initial_goal,
-            blackboard=blackboard
-        )
-        investigation_rounds += 1
+        try:
+            blackboard = self.researcher(
+                research_goal=initial_goal,
+                blackboard=blackboard
+            )
+            investigation_rounds += 1
+        except Exception as e:
+            print(f"ERROR in initial research: {e}")
+            traceback.print_exc()
+            # Continue with empty blackboard if research fails
 
         # Classification loop with iterative investigation
         for _ in range(self.MAX_INVESTIGATION_ROUNDS):
@@ -83,11 +89,17 @@ Initial Url: {lead_url}""" \
 
             # If more investigation is needed
             if classification["further_investigation"]:
-                blackboard = self.researcher(
-                    research_goal=classification["further_investigation"],
-                    blackboard=blackboard
-                )
-                investigation_rounds += 1
+                try:
+                    blackboard = self.researcher(
+                        research_goal=classification["further_investigation"],
+                        blackboard=blackboard
+                    )
+                    investigation_rounds += 1
+                except Exception as e:
+                    print(f"ERROR in follow-up research: {e}")
+                    traceback.print_exc()
+                    # Continue with existing blackboard if research fails
+                    break
 
         # If we've exhausted iterations, make a final classification
         final_classification = self.classifier(
