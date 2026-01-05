@@ -15,7 +15,7 @@ from src.context_.settings import judge_model
 from .judge_examples import get_formatted_examples
 
 
-class LLMJudge:
+class ClassifierJudge:
     """
     Static LLM-based judge for evaluating lead classification quality.
 
@@ -49,12 +49,15 @@ class LLMJudge:
 
     def _build_system_prompt(self) -> str:
         """Build the system prompt with few-shot examples."""
-        return f"""You are an expert lead quality evaluator for a prompt optimization consulting service.
+        return f"""You are an expert lead quality evaluator for the offering below.
 
 Your task is to evaluate whether a lead classification is correct based on the provided context.
 
 ## Ideal Customer Profile (ICP)
 {icp_profile}
+
+## offering
+{offering}
 
 ## Classification Guidelines
 - **Strong fit**: Clear alignment with ICP, likely to engage with the offering.

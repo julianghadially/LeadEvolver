@@ -1,4 +1,4 @@
-# LeadEvolver Bot Requirements
+# LeadEvolver Bot Requirements (For Claude)
 LeadEvolver is a project that implements DSPy in Python to build a sales lead research workflow for classifying lead quality and generating profiles. 
 
 This project should be implemented according to the DSPy framework. We are building a "compound AI system" that involves multi hop web search, classification, and ideal customer profile (ICP) composition. We are using DSPY so that we can optimize our system for accuracy (and later for efficiency). 

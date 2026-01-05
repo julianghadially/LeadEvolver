@@ -94,3 +94,55 @@ class ResearcherModule(dspy.Module):
             blackboard.add_research_findings(research_findings)
 
         return blackboard
+
+class ProfileResearcherModule(dspy.Module):
+    """
+    Research module for drafting profiles that uses DSPy ReAct to iteratively search and scrape web pages.
+    Adds findings to the blackboard using PageFindings objects.
+
+    Uses max 5 iterations to prevent excessive context growth.
+    Each page is limited to 10k characters.
+    """
+
+    MAX_ACTIONS = 6 #incl scrape and search
+
+    def __init__(self):
+        super().__init__()
+        self.researcher = dspy.ReAct(
+            Researcher,
+            tools=[search, scrape],
+            max_iters=self.MAX_ACTIONS
+        )
+
+    def forward(self, research_goal: str, blackboard: Blackboard) -> Blackboard:
+        """
+        Execute research based on the goal and existing blackboard context.
+
+        Args:
+            research_goal: The research goal(s) to investigate
+            blackboard: Blackboard instance with existing context/findings about the lead
+
+        Returns:
+            Blackboard object
+        """
+        blackboard_str = blackboard.to_string()
+
+        # Run researcher
+        result = self.researcher(research_goal=research_goal, blackboard=blackboard_str)
+
+        # Extract findings from result (now strings, not objects)
+        page_findings = result.page_findings or ""
+        research_findings = result.research_findings or ""
+
+        # Add page findings as string directly to blackboard
+        if page_findings:
+            if blackboard.page_findings:
+                blackboard.page_findings += "\n\n---\n\n" + page_findings
+            else:
+                blackboard.page_findings = page_findings
+
+        # Add research findings
+        if research_findings:
+            blackboard.add_research_findings(research_findings)
+
+        return blackboard

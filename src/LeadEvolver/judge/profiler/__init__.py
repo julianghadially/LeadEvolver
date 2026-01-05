@@ -1,16 +1,15 @@
-from .llm_judge import ClassifierJudge
+from .judge import ProfileJudge
 from .metrics import (
     training_metric,
-    test_set_metric,
-    compute_classification_score
+    training_metric_with_classification
 )
 from .judge_examples import get_judge_examples, get_formatted_examples
 
 __all__ = [
-    "ClassifierJudge",
+    "ProfileJudge",
     "training_metric",
-    "test_set_metric",
-    "compute_classification_score",
+    "training_metric_with_classification",
     "get_judge_examples",
     "get_formatted_examples"
 ]
+

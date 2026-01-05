@@ -22,7 +22,7 @@ from typing import Dict, List, Any
 from src.LeadEvolver.data_pipeline import prepare_train_test_split
 from src.LeadEvolver.optimizer import optimize_pipeline
 from src.LeadEvolver.judge import (
-    LLMJudge,
+    ClassifierJudge,
     training_metric,
     test_set_metric,
     compute_classification_score
@@ -111,7 +111,7 @@ def run_experiment_1(
     Returns:
         Dict with results for all conditions
     """
-    from src.LeadEvolver.modules.lead_evolver_pipeline import LeadEvolverPipeline
+    from src.LeadEvolver.modules.lead_evolver_pipeline import LeadClassifierPipeline
     from src.context_.context import openai_key
 
     # Configure DSPy
@@ -138,7 +138,7 @@ def run_experiment_1(
     print("BASELINE: Unoptimized Pipeline")
     print("-" * 60)
 
-    baseline_pipeline = LeadEvolverPipeline()
+    baseline_pipeline = LeadClassifierPipeline()
     results["baseline_unoptimized"] = evaluate_on_test_set(
         baseline_pipeline,
         test_examples,
@@ -168,7 +168,7 @@ def run_experiment_1(
     print("-" * 60)
 
     # Start with fresh pipeline for optimization
-    pipeline_to_optimize = LeadEvolverPipeline()
+    pipeline_to_optimize = LeadClassifierPipeline()
 
     optimized_pipeline = optimize_pipeline(
         pipeline_to_optimize,

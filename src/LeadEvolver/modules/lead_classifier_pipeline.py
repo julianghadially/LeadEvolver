@@ -1,12 +1,11 @@
 import dspy
-from data.icp_context import offering, icp_profile
 from src.LeadEvolver.modules.researcher_module import ResearcherModule
 from src.LeadEvolver.modules.lead_classifier_module import LeadClassifierModule
 from src.data_schema.blackboard import Blackboard
 import traceback
 
 
-class LeadEvolverPipeline(dspy.Module):
+class LeadClassifierPipeline(dspy.Module):
     """
     Main pipeline that orchestrates lead research and classification.
 
@@ -20,10 +19,11 @@ class LeadEvolverPipeline(dspy.Module):
 
     MAX_INVESTIGATION_ROUNDS = 5
 
-    def __init__(self):
+    def __init__(self, use_system_cache: bool = False):
         super().__init__()
         self.researcher = ResearcherModule()
         self.classifier = LeadClassifierModule()
+        self.use_system_cache = use_system_cache
 
     def forward(
         self,
@@ -72,11 +72,7 @@ Initial Url: {lead_url}"""
         # Classification loop with iterative investigation
         for _ in range(self.MAX_INVESTIGATION_ROUNDS):
             # Attempt classification (classifier expects string)
-            classification = self.classifier(
-                lead_context=blackboard.to_string(),
-                ideal_customer_profile=icp_profile,
-                offering=offering
-            )
+            classification = self.classifier(lead_context=blackboard.to_string())
 
             # If classification is final, we're done
             if classification["is_final"]:
@@ -103,13 +99,12 @@ Initial Url: {lead_url}"""
 
         # If we've exhausted iterations, make a final classification
         final_classification = self.classifier(
-            lead_context="\n\n[RESEARCH EXHAUSTED: Maximum investigation rounds reached. Make final classification with available information.]\n" + blackboard.to_string() ,
-            ideal_customer_profile=icp_profile,
-            offering=offering
+            lead_context=blackboard.to_string(),
+            force_classification=True
         )
 
         return {
-            "lead_quality": final_classification["lead_quality"] or "not_a_fit",
+            "lead_quality": final_classification["lead_quality"] or "None",
             "rationale": final_classification["rationale"],
             "blackboard": blackboard.to_dict(),
             "investigation_rounds": investigation_rounds,

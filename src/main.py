@@ -15,9 +15,13 @@ import dspy
 from pathlib import Path
 
 from src.context_.context import openai_key
-from src.LeadEvolver.modules.lead_evolver_pipeline import LeadEvolverPipeline
+from src.LeadEvolver.modules.lead_classifier_pipeline import LeadClassifierPipeline
 from src.LeadEvolver.modules.researcher_module import ResearcherModule
 from src.LeadEvolver.modules.lead_classifier_module import LeadClassifierModule
 from src.context_.settings import lm_model
 
 #TBD: will create main function later.
+# this should be able to run either system.
+# One system 1 is run, It should store the blackboards as well as the classifications in cache/.
+# System 2 should be able to pick up from where system 1 left off, using the cache/LeadEvolver
+

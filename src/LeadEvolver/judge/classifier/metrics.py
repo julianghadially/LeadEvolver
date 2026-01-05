@@ -6,19 +6,19 @@ Test metric: Direct comparison to human labels
 """
 
 from typing import Any, Optional
-from .llm_judge import LLMJudge
+from .judge import ClassifierJudge
 from src.data_schema.blackboard import Blackboard
 
 
 # Singleton judge instance to avoid repeated initialization
-_judge_instance: Optional[LLMJudge] = None
+_judge_instance: Optional[ClassifierJudge] = None
 
 
-def get_judge() -> LLMJudge:
+def get_judge() -> ClassifierJudge:
     """Get or create the singleton LLM Judge instance."""
     global _judge_instance
     if _judge_instance is None:
-        _judge_instance = LLMJudge()
+        _judge_instance = ClassifierJudge()
     return _judge_instance
 
 

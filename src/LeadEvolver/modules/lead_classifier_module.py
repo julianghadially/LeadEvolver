@@ -1,6 +1,8 @@
 import dspy
-from src.LeadEvolver.signatures.LeadClassifier import LeadClassifier
 from typing import Optional, Literal
+
+from data.icp_context import offering, icp_profile
+from src.LeadEvolver.signatures.LeadClassifier import LeadClassifier
 
 
 class LeadClassifierModule(dspy.Module):
@@ -11,21 +13,6 @@ class LeadClassifierModule(dspy.Module):
     Uses the LeadClassifier signature which supports iterative investigation.
     """
 
-    DEFAULT_ICP = [
-        "Software engineers or teams building AI/ML systems that need optimization",
-        "Companies using DSPy or similar prompt optimization frameworks",
-        "Teams with compound AI systems involving multiple LLM calls",
-        "Organizations seeking to improve accuracy or efficiency of AI workflows",
-        "Engineers working on RAG, agents, or multi-hop reasoning systems"
-    ]
-
-    DEFAULT_OFFERING = """
-    A prompt optimization service for continuously improving AI workflows and systems.
-    We help optimize systems that have one or more outcome metrics, including ground truth
-    and non-ground truth outcomes. Our service is particularly valuable for engineers
-    already using DSPy or building compound AI systems.
-    """
-
     def __init__(self):
         super().__init__()
         self.classifier = dspy.Predict(LeadClassifier)
@@ -33,8 +20,7 @@ class LeadClassifierModule(dspy.Module):
     def forward(
         self,
         lead_context: str,
-        ideal_customer_profile: Optional[list] = None,
-        offering: Optional[str] = None
+        force_classification: bool = False
     ) -> dict:
         """
         Classify a lead based on the provided context.
@@ -50,13 +36,12 @@ class LeadClassifierModule(dspy.Module):
                 - further_investigation: Research goal if more info needed, else None
                 - is_final: True if classification is complete, False if needs more research
         """
-        icp = ideal_customer_profile or self.DEFAULT_ICP
-        offer = offering or self.DEFAULT_OFFERING
-
+        
         result = self.classifier(
             lead_context=lead_context,
-            ideal_customer_profile=icp,
-            offering=offer
+            ideal_customer_profile=icp_profile,
+            offering=offering,
+            force_classification=force_classification
         )
 
         lead_quality = result.lead_quality

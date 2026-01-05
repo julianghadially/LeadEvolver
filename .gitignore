@@ -13,3 +13,4 @@ results/optimization/gepa_optimization*
 *.sqlite
 Data/archive/*
 mlflow.db
+learnings.md
